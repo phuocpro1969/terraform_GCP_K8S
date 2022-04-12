@@ -10,14 +10,6 @@ sudo ufw disable
 sudo swapoff -a
 sudo sed -i '/swap/d' /etc/fstab
 
-# Enable ssh password authentication
-sudo sed -i 's/^PasswordAuthentication .*/PasswordAuthentication yes/' /etc/ssh/sshd_config
-sudo sed -i 's/^PermitRootLogin .*/PermitRootLogin yes/' /etc/ssh/sshd_config
-sudo systemctl reload sshd
-
-# Set Root password
-sudo echo -e "admin\admin" | sudo passwd root >/dev/null 2>&1
-
 # update settings for kubernetes network
 sudo /bin/su -c "cat >>/etc/sysctl.d/kubernetes.conf<<EOF
 net.bridge.bridge-nf-call-ip6tables = 1
