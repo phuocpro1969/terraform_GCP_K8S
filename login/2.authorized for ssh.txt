@@ -1,0 +1,19 @@
+# vi /etc/hosts
+10.128.0.9 load-balance.us-central1-c.c.learning-devops-341309.internal load-balance
+10.128.0.8 master2-node.us-central1-c.c.learning-devops-341309.internal master2-node
+10.128.0.7 master-node.us-central1-c.c.learning-devops-341309.internal master-node
+10.128.0.6 worker-node.us-central1-c.c.learning-devops-341309.internal worker-node
+
+# vi /etc/hostname
+load-balance
+worker2-node
+master-node
+worker-node
+
+#!/bin/bash
+ssh-copy-id -i ~/.ssh/id_rsa.pub phuocpro1969@master
+ssh-copy-id -i ~/.ssh/id_rsa.pub phuocpro1969@worker1
+ssh-copy-id -i ~/.ssh/id_rsa.pub phuocpro1969@worker2
+
+# ssh-copy-id -i /home/phuocpro1969/.ssh/id_rsa.pub phuocpro1969@worker1
+# ssh-copy-id -i /home/phuocpro1969/.ssh/id_rsa.pub phuocpro1969@worker2

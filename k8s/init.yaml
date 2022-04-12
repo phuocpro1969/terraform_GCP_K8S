@@ -1,0 +1,44 @@
+apiVersion: kubeadm.k8s.io/v1beta2
+bootstrapTokens:
+    - groups:
+          - system:bootstrappers:kubeadm:default-node-token
+      token: abcdef.0123456789abcdef
+      ttl: 24h0m0s
+      usages:
+          - signing
+          - authentication
+kind: InitConfiguration
+localAPIEndpoint:
+    advertiseAddress: 10.20.0.10
+    bindPort: 6443
+nodeRegistration:
+    criSocket: /var/run/dockershim.sock
+    name: master
+    taints:
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/master
+---
+apiServer:
+    timeoutForControlPlane: 4m0s
+    extraArgs:
+        authorization-mode: Node,RBAC
+        service-node-port-range: 80-32767
+apiVersion: kubeadm.k8s.io/v1beta2
+certificatesDir: /etc/kubernetes/pki
+clusterName: kubernetes
+controllerManager: {}
+dns:
+    type: CoreDNS
+etcd:
+    local:
+        dataDir: /var/lib/etcd
+imageRepository: k8s.gcr.io
+kind: ClusterConfiguration
+kubernetesVersion: v1.22.8
+controlPlaneEndpoint: 10.20.0.10:6443
+networking:
+    dnsDomain: cluster.local
+    serviceSubnet: 10.20.0.0/24
+    podSubnet: 192.168.0.0/16
+
+scheduler: {}
