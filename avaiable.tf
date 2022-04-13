@@ -30,20 +30,16 @@ variable "user" {
   default = "phuocpro1969"
 }
 
-variable "ssh_file_pub" {
-  default = "./login/id_rsa.pub"
+variable "ssh_file_private" {
+  default = "./ssh/id_rsa"
 }
 
-variable "ssh_file" {
-  default = "./login/id_rsa"
+variable "ssh_file_public" {
+  default = "./ssh/id_rsa.pub"
 }
 
 variable "ssh_port" {
   default = 22
-}
-
-variable "script_install" {
-  default = "./scripts/install.sh"
 }
 
 variable "master-count" {
@@ -54,6 +50,22 @@ variable "worker-count" {
   default = 1
 }
 
+variable "script_install" {
+  default = "./scripts/install.sh"
+}
+
 variable "script_install_proxy" {
   default = "./scripts/install_proxy.sh"
+}
+
+variable "script_add_host" {
+  default = "./scripts/add_host.sh"
+}
+
+variable "ssh_folder" {
+  default = "./ssh/"
+}
+
+variable "k8s_folder" {
+  default = "./k8s"
 }

@@ -1,9 +1,11 @@
 #!/bin/bash
 
 # install haproxy
-sudo apt update -y && sudo apt install -y haproxy
+sudo apt update -y 
+sudo apt install -y haproxy
 
 sudo /bin/su -c "cat >>/etc/haproxy/haproxy.cfg<<EOF
+
 frontend kubernetes-frontend
     bind 10.20.0.10:6443
     mode tcp
@@ -19,3 +21,4 @@ backend kubernetes-backend
 EOF"
 
 sudo service haproxy restart
+sudo apt update -y

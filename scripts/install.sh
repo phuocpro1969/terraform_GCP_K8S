@@ -16,6 +16,12 @@ net.bridge.bridge-nf-call-ip6tables = 1
 net.bridge.bridge-nf-call-iptables = 1
 EOF"
 
+# add password to root
+echo  "root" | sudo passwd --stdin root
+echo  "root" | sudo passwd --stdin ubuntu
+sudo sed -i "s/^PasswordAuthentication no/PasswordAuthentication yes/" /etc/ssh/sshd_config
+sudo service sshd restart
+
 # install docker
 sudo apt install -y git wget apt-transport-https ca-certificates curl gnupg-agent software-properties-common
 sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
@@ -35,3 +41,7 @@ sudo curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-ke
 sudo apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
 sudo apt update -y && sudo apt install -y kubeadm=1.22.8-00 kubelet=1.22.8-00 kubectl=1.22.8-00
 sudo apt update -y
+
+# install k9s
+sudo apt install snapd -y
+sudo snap install k9s 

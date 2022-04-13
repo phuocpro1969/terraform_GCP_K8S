@@ -8,9 +8,7 @@ resource "google_compute_instance" "lb-instance" {
     "${var.network}-firewall-http",
     "${var.network}-firewall-https",
     "${var.network}-firewall-icmp",
-    "${var.network}-firewall-postgresql",
-    "${var.network}-firewall-openshift-console",
-    "${var.network}-firewall-secure-forward",
+    "${var.network}-firewall-internal"
   ]
 
   boot_disk {
@@ -21,7 +19,7 @@ resource "google_compute_instance" "lb-instance" {
   }
 
   network_interface {
-    subnetwork = google_compute_subnetwork.network_subnetwor.name
+    subnetwork = google_compute_subnetwork.network_subnetwork.name
     network_ip = "10.20.0.10"
     access_config {
       // Ephemeral IP
@@ -30,7 +28,8 @@ resource "google_compute_instance" "lb-instance" {
   }
 
   metadata = {
-    ssh-keys = "${var.user}:${file(var.ssh_file_pub)}"
+    ssh-keys       = "${var.user}:${file(var.ssh_file_public)}"
+    startup-script = "${file(var.script_install)} ${file(var.script_install_proxy)} sudo echo '${var.user}:root' | sudo chpasswd"
   }
 }
 
@@ -45,9 +44,7 @@ resource "google_compute_instance" "master-instance" {
     "${var.network}-firewall-http",
     "${var.network}-firewall-https",
     "${var.network}-firewall-icmp",
-    "${var.network}-firewall-postgresql",
-    "${var.network}-firewall-openshift-console",
-    "${var.network}-firewall-secure-forward",
+    "${var.network}-firewall-internal"
   ]
 
   boot_disk {
@@ -58,7 +55,7 @@ resource "google_compute_instance" "master-instance" {
   }
 
   network_interface {
-    subnetwork = google_compute_subnetwork.network_subnetwor.name
+    subnetwork = google_compute_subnetwork.network_subnetwork.name
     network_ip = "10.20.0.1${count.index + 1}"
 
     access_config {
@@ -68,7 +65,8 @@ resource "google_compute_instance" "master-instance" {
   }
 
   metadata = {
-    ssh-keys = "${var.user}:${file(var.ssh_file_pub)}"
+    ssh-keys       = "${var.user}:${file(var.ssh_file_public)}"
+    startup-script = "${file(var.script_install)} sudo echo '${var.user}:root' | sudo chpasswd"
   }
 }
 
@@ -83,9 +81,7 @@ resource "google_compute_instance" "worker-instance" {
     "${var.network}-firewall-http",
     "${var.network}-firewall-https",
     "${var.network}-firewall-icmp",
-    "${var.network}-firewall-postgresql",
-    "${var.network}-firewall-openshift-console",
-    "${var.network}-firewall-secure-forward",
+    "${var.network}-firewall-internal"
   ]
 
   boot_disk {
@@ -96,15 +92,12 @@ resource "google_compute_instance" "worker-instance" {
   }
 
   network_interface {
-    subnetwork = google_compute_subnetwork.network_subnetwor.name
+    subnetwork = google_compute_subnetwork.network_subnetwork.name
     network_ip = "10.20.0.2${count.index + 1}"
   }
 
   metadata = {
-    ssh-keys = "${var.user}:${file(var.ssh_file)}"
-  }
-  metadata_startup_script = file("./scripts/install.sh")
-  lifecycle {
-    create_before_destroy = true
+    ssh-keys       = "${var.user}:${file(var.ssh_file_public)}"
+    startup-script = "${file(var.script_install)} sudo echo '${var.user}:root' | sudo chpasswd"
   }
 }

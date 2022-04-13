@@ -1,3 +1,23 @@
+resource "google_compute_firewall" "internal" {
+  name    = "${var.network}-firewall-internal"
+  network = google_compute_network.network.name
+
+  allow {
+    protocol = "icmp"
+  }
+
+  allow {
+    protocol = "tcp"
+  }
+
+  allow {
+    protocol = "udp"
+  }
+
+  target_tags   = ["${var.network}-firewall-internal"]
+  source_ranges = ["10.20.0.0/16"]
+}
+
 resource "google_compute_firewall" "ssh" {
   name    = "${var.network}-firewall-ssh"
   network = google_compute_network.network.name
