@@ -19,8 +19,8 @@ EOF"
 # add password to root
 sudo echo "root:root" | sudo chpasswd
 sudo echo "ubuntu:root" | sudo chpasswd
-sudo sed -i "s/^PasswordAuthentication no/PasswordAuthentication yes/" /etc/ssh/sshd_config
-sudo service sshd restart
+# sudo sed -i "s/^PasswordAuthentication no/PasswordAuthentication yes/" /etc/ssh/sshd_config
+# sudo service sshd restart
 
 # install docker
 sudo apt install -y git wget apt-transport-https ca-certificates curl gnupg-agent software-properties-common
@@ -58,8 +58,16 @@ sudo apt update -y
 
 # install k9s
 sudo apt install snapd -y
-sudo snap install k9s 
+sudo snap install k9s
+
+# install helm && argocd
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
+
+curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+chmod +x /usr/local/bin/argocd
 
 # install packages
-sudo snap install jq 
-sudo apt install -y unzip 
+sudo snap install jq
+sudo apt install -y unzip nc iproute iproute-doc
