@@ -9,7 +9,7 @@ sudo /bin/su -c "cat >>/etc/hostname<<EOF
 lb
 EOF"
 
-for i in {1..$1}
+for ((i=1; i<=$1; i++))
 do
 
 sudo /bin/su -c "cat >>/etc/hosts<<EOF
@@ -18,7 +18,7 @@ EOF"
 
 done
 
-for i in {1..$2}
+for ((i=2; i<=$2; i++))
 do
 
 sudo /bin/su -c "cat >>/etc/hosts<<EOF

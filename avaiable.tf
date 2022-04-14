@@ -27,7 +27,7 @@ variable "network" {
 }
 
 variable "user" {
-  default = "phuocpro1969"
+  default = "ubuntu"
 }
 
 variable "ssh_file_private" {
