@@ -88,7 +88,10 @@ resource "null_resource" "only_master_1_provisilboner" {
     destination = "/home/${var.user}"
   }
 
-  # provisioner "remote-exec" {
-  #   inline = []
-  # }
+  provisioner "remote-exec" {
+    inline = [
+      "sudo chmod +x /home/${var.user}/k8s/init.sh",
+      "sudo /bin/bash /home/${var.user}/k8s/init.sh ${var.user} ${var.master-count} ${var.worker-count}"
+    ]
+  }
 }

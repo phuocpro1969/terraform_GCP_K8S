@@ -1,4 +1,5 @@
 apiVersion: kubeadm.k8s.io/v1beta2
+kind: InitConfiguration
 bootstrapTokens:
     - groups:
           - system:bootstrappers:kubeadm:default-node-token
@@ -7,25 +8,36 @@ bootstrapTokens:
       usages:
           - signing
           - authentication
-kind: InitConfiguration
 localAPIEndpoint:
-    advertiseAddress: 10.20.0.10
+    advertiseAddress: 10.20.0.11 # master1 ip
     bindPort: 6443
 nodeRegistration:
     criSocket: /var/run/dockershim.sock
-    name: master
+    name: master1
     taints:
         - effect: NoSchedule
           key: node-role.kubernetes.io/master
+
 ---
+apiVersion: kubeadm.k8s.io/v1beta2
+kubernetesVersion: v1.22.8
+kind: ClusterConfiguration
+clusterName: kubernetes
+controlPlaneEndpoint: 10.20.0.10:6443 # proxy ip
 apiServer:
     timeoutForControlPlane: 4m0s
     extraArgs:
         authorization-mode: Node,RBAC
         service-node-port-range: 80-32767
-apiVersion: kubeadm.k8s.io/v1beta2
+        max-requests-inflight: "1000"
+        max-mutating-requests-inflight: "500"        
+        default-watch-cache-size: "500"
+        watch-cache-sizes: "persistentvolumeclaims#1000,persistentvolumes#1000"
 certificatesDir: /etc/kubernetes/pki
-clusterName: kubernetes
+networking:
+    dnsDomain: cluster.local
+    serviceSubnet: 10.20.50.0/20
+    podSubnet: 192.168.0.0/16
 controllerManager: {}
 dns:
     type: CoreDNS
@@ -33,12 +45,5 @@ etcd:
     local:
         dataDir: /var/lib/etcd
 imageRepository: k8s.gcr.io
-kind: ClusterConfiguration
-kubernetesVersion: v1.22.8
-controlPlaneEndpoint: 10.20.0.10:6443
-networking:
-    dnsDomain: cluster.local
-    serviceSubnet: 10.20.0.0/24
-    podSubnet: 192.168.0.0/16
 
 scheduler: {}

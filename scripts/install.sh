@@ -17,8 +17,8 @@ net.bridge.bridge-nf-call-iptables = 1
 EOF"
 
 # add password to root
-echo  "root" | sudo passwd --stdin root
-echo  "root" | sudo passwd --stdin ubuntu
+sudo echo "root:root" | sudo chpasswd
+sudo echo "ubuntu:root" | sudo chpasswd
 sudo sed -i "s/^PasswordAuthentication no/PasswordAuthentication yes/" /etc/ssh/sshd_config
 sudo service sshd restart
 
@@ -27,7 +27,21 @@ sudo apt install -y git wget apt-transport-https ca-certificates curl gnupg-agen
 sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 sudo apt update -y && sudo apt install -y docker-ce
+
+sudo mkdir /etc/docker
+sudo cat <<EOF | sudo tee /etc/docker/daemon.json
+{
+"exec-opts": ["native.cgroupdriver=systemd"],
+"log-driver": "json-file",
+"log-opts": {
+"max-size": "100m"
+},
+"storage-driver": "overlay2"
+}
+EOF
+
 sudo service docker enable
+sudo systemctl daemon-reload
 sudo service docker restart
 sudo chmod 666 /var/run/docker.sock
 sudo usermod -aG docker $(whoami)
@@ -45,3 +59,7 @@ sudo apt update -y
 # install k9s
 sudo apt install snapd -y
 sudo snap install k9s 
+
+# install packages
+sudo snap install jq 
+sudo apt install -y unzip 
