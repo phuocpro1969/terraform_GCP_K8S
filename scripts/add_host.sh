@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# add hosts and hostname
+# add hosts
 sudo /bin/su -c "cat >>/etc/hosts<<EOF
 10.20.0.10 loadbalancer.google.internal lb
 EOF"

@@ -4,10 +4,10 @@
 while ! which kubeadm >/dev/null; do echo "wait kubeadm"; sleep 1s; done
 
 # permissions kube
-sudo chmod 777 $(which kubeadm)
-sudo chmod 777 $(which kubectl)
-sudo chmod 777 $(which kubelet)
-sudo chmod 777 $(which helm)
+sudo chmod -R 777 $(which kubeadm)
+sudo chmod -R 777 $(which kubectl)
+sudo chmod -R 777 $(which kubelet)
+sudo chmod -R 777 $(which helm)
 
 # init kubeadm to start
 sudo kubeadm init --upload-certs --config /home/$1/k8s/init_k8s/init.yaml
@@ -63,7 +63,7 @@ kubectl label nodes worker1 role=worker
 
 # Create certs
 sudo mkdir certs_db
-sudo chmod 777 -R certs_db
+sudo chmod -R 777  certs_db
 sudo openssl req -nodes -newkey rsa:2048 -keyout certs_db/dashboard.key -out certs_db/dashboard.csr -subj "/C=US/ST=US/L=US/O=US/OU=US/CN=kubernetes-dashboard"
 sudo openssl x509 -req -sha256 -days 3650 -in certs_db/dashboard.csr -signkey certs_db/dashboard.key -out certs_db/dashboard.crt
 sudo chmod -R 777 certs_db
