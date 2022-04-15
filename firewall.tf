@@ -68,3 +68,16 @@ resource "google_compute_firewall" "icmp" {
   target_tags   = ["${var.network}-firewall-icmp"]
   source_ranges = ["0.0.0.0/0"]
 }
+
+resource "google_compute_firewall" "k8s" {
+  name    = "${var.network}-firewall-k8s"
+  network = google_compute_network.network.name
+
+  allow {
+    protocol = "tcp"
+    ports    = ["80-32000"]
+  }
+
+  target_tags   = ["${var.network}-firewall-k8s"]
+  source_ranges = ["0.0.0.0/0"]
+}

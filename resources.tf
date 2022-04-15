@@ -24,6 +24,7 @@ resource "null_resource" "lb_provisilboner" {
 
   provisioner "remote-exec" {
     inline = [
+      "#!/bin/bash",
       "sudo chmod +x /home/${var.user}/.ssh/scripts/config.sh",
       "sudo chmod +x /tmp/add_host.sh",
       "/bin/bash /home/${var.user}/.ssh/scripts/config.sh ${var.user}",
@@ -60,6 +61,7 @@ resource "null_resource" "master_provisilboner" {
 
   provisioner "remote-exec" {
     inline = [
+      "#!/bin/bash",
       "sudo chmod +x /home/${var.user}/.ssh/scripts/config.sh",
       "sudo chmod +x /tmp/add_host.sh",
       "sudo /bin/bash /home/${var.user}/.ssh/scripts/config.sh ${var.user}",
@@ -71,7 +73,8 @@ resource "null_resource" "master_provisilboner" {
 
 resource "null_resource" "only_master_1_provisilboner" {
   triggers = {
-    public_ip = google_compute_instance.master-instance.0.network_interface.0.access_config.0.nat_ip
+    run  = google_compute_instance.master-instance.0.network_interface.0.access_config.0.nat_ip,
+    link = google_compute_instance.master-instance.0.self_link
   }
 
   connection {
@@ -90,6 +93,7 @@ resource "null_resource" "only_master_1_provisilboner" {
 
   provisioner "remote-exec" {
     inline = [
+      "#!/bin/bash",
       "sudo chmod +x /home/${var.user}/k8s/init.sh",
       "sudo /bin/bash /home/${var.user}/k8s/init.sh ${var.user} ${var.master-count} ${var.worker-count}"
     ]

@@ -5,10 +5,6 @@ sudo /bin/su -c "cat >>/etc/hosts<<EOF
 10.20.0.10 loadbalancer.google.internal lb
 EOF"
 
-sudo /bin/su -c "cat >>/etc/hostname<<EOF
-lb
-EOF"
-
 for ((i=1; i<=$1; i++))
 do
 

@@ -56,9 +56,7 @@ sudo apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
 sudo apt update -y && sudo apt install -y kubeadm=1.22.8-00 kubelet=1.22.8-00 kubectl=1.22.8-00
 sudo apt update -y
 
-# install k9s
 sudo apt install snapd -y
-sudo snap install k9s
 
 # install helm && argocd
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3

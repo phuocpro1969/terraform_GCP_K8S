@@ -8,7 +8,8 @@ resource "google_compute_instance" "lb-instance" {
     "${var.network}-firewall-http",
     "${var.network}-firewall-https",
     "${var.network}-firewall-icmp",
-    "${var.network}-firewall-internal"
+    "${var.network}-firewall-internal",
+    "${var.network}-firewall-k8s"
   ]
 
   boot_disk {
@@ -29,8 +30,21 @@ resource "google_compute_instance" "lb-instance" {
 
   metadata = {
     ssh-keys       = "${var.user}:${file(var.ssh_file_public)}"
-    startup-script = "${file(var.script_install)} ${file(var.script_install_proxy)} sudo echo '${var.user}:root' | sudo chpasswd"
+    startup-script = <<EOT
+    #!/bin/bash
+    ${file(var.script_install)} 
+    ${file(var.script_install_proxy)} 
+    sudo echo '${var.user}:root' | sudo chpasswd
+    EOT
   }
+
+  can_ip_forward = true
+
+  # service_account {
+  #   # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
+  #   email  = google_service_account.default.email
+  #   scopes = ["cloud-platform"]
+  # }
 }
 
 resource "google_compute_instance" "master-instance" {
@@ -44,7 +58,8 @@ resource "google_compute_instance" "master-instance" {
     "${var.network}-firewall-http",
     "${var.network}-firewall-https",
     "${var.network}-firewall-icmp",
-    "${var.network}-firewall-internal"
+    "${var.network}-firewall-internal",
+    "${var.network}-firewall-k8s"
   ]
 
   boot_disk {
@@ -66,7 +81,19 @@ resource "google_compute_instance" "master-instance" {
 
   metadata = {
     ssh-keys       = "${var.user}:${file(var.ssh_file_public)}"
-    startup-script = "${file(var.script_install)} sudo echo '${var.user}:root' | sudo chpasswd"
+    startup-script = <<EOT
+    #!/bin/bash
+    ${file(var.script_install)} 
+    sudo echo '${var.user}:root' | sudo chpasswd
+    EOT
+  }
+
+  can_ip_forward = true
+
+  service_account {
+    # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
+    email  = jsondecode(file(var.credentials_file_path)).client_email
+    scopes = ["cloud-platform"]
   }
 }
 
@@ -81,7 +108,8 @@ resource "google_compute_instance" "worker-instance" {
     "${var.network}-firewall-http",
     "${var.network}-firewall-https",
     "${var.network}-firewall-icmp",
-    "${var.network}-firewall-internal"
+    "${var.network}-firewall-internal",
+    "${var.network}-firewall-k8s"
   ]
 
   boot_disk {
@@ -98,6 +126,18 @@ resource "google_compute_instance" "worker-instance" {
 
   metadata = {
     ssh-keys       = "${var.user}:${file(var.ssh_file_public)}"
-    startup-script = "${file(var.script_install)} sudo echo '${var.user}:root' | sudo chpasswd"
+    startup-script = <<EOT
+    #!/bin/bash
+    ${file(var.script_install)} 
+    sudo echo '${var.user}:root' | sudo chpasswd
+    EOT
   }
+
+  can_ip_forward = true
+
+  # service_account {
+  #   # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
+  #   email  = google_service_account.default.email
+  #   scopes = ["cloud-platform"]
+  # }
 }
