@@ -39,12 +39,12 @@ kubectl get po -n kubernetes-dashboard -o wide
 ### get password admin-user
 
 ```
-kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboard get secret | grep admin-user | awk '{print $1}')
-
+export TOKEN_LOGIN=$(kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboard get secret | grep admin-user | awk '{print $1}') | awk '{print $2}' | tail -1)
+echo $TOKEN_LOGIN
 ```
 
 ### url dashboard
 
 ```
-http://<master1 or master2 IP address>:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
+https://<master1 or master2 IP address>:8001
 ```

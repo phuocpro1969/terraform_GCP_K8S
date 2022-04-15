@@ -72,8 +72,8 @@ sudo chmod -R 777 certs_db
 kubectl apply -f /home/$1/k8s/init_k8s/dashboard.yaml
 kubectl create secret generic kubernetes-dashboard-certs --from-file=certs_db -n kubernetes-dashboard
 
-# Apply metrics
-# kubectl apply -f /home/$1/k8s/init_k8s/metrics.yaml
-
 # Apply user-Admin
 kubectl apply -f /home/$1/k8s/init_k8s/admin-user.yaml
+
+# Apply metrics to k8s dashboard
+kubectl apply -f /home/$1/k8s/init_k8s/metrics.yaml
