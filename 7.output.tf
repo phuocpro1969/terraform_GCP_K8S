@@ -23,13 +23,3 @@ output "instance_worker_ip_addr" {
     google_compute_instance.worker-instance
   ]
 }
-
-output "resources_master_provisilboner_1" {
-  value       = "install k8s successfully"
-  description = "install k8s"
-  depends_on = [
-    null_resource.only_master_1_provisilboner
-  ]
-}
-
-

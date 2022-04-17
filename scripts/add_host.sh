@@ -1,24 +1,22 @@
 #!/bin/bash
 
-# add hosts
-sudo /bin/su -c "cat >>/etc/hosts<<EOF
+# add hosts lb
+sudo tee -a /etc/hosts <<-EOF
 10.20.0.10 loadbalancer.google.internal lb
-EOF"
+EOF
 
-for ((i=1; i<=$1; i++))
+# add hosts master
+for ((i=1; i<=$MASTER_COUNT; i++))
 do
-
-sudo /bin/su -c "cat >>/etc/hosts<<EOF
+sudo tee -a /etc/hosts <<-EOF
 10.20.0.1${i} master${i}.google.internal master${i}
-EOF"
-
+EOF
 done
 
-for ((i=2; i<=$2; i++))
+# add hosts worker
+for ((i=1; i<=$WORKER_COUNT; i++))
 do
-
-sudo /bin/su -c "cat >>/etc/hosts<<EOF
-10.20.0.1${i} master${i}.google.internal master${i}
-EOF"
-
+sudo tee -a /etc/hosts <<-EOF
+10.20.0.2${i} worker${i}.google.internal worker${i}
+EOF
 done

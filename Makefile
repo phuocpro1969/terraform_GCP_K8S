@@ -8,3 +8,8 @@ plan:
 
 destroy:
 	terraform destroy -auto-approve
+
+output:
+	terraform output
+
+restart: destroy apply

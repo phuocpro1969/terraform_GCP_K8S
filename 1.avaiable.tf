@@ -27,11 +27,11 @@ variable "network" {
 }
 
 variable "user" {
-  default = "ubuntu"
+  default = "root"
 }
 
 variable "ssh_file_private" {
-  default = "./ssh/id_rsa"
+  default = "./ssh/id_rsa.pri"
 }
 
 variable "ssh_file_public" {
@@ -51,15 +51,31 @@ variable "worker-count" {
 }
 
 variable "script_install" {
-  default = "./scripts/install.sh"
+  default = "./scripts/init.sh"
+}
+
+variable "script_add_host" {
+  default = "./scripts/add_host.sh"
+}
+
+variable "script_install_docker" {
+  default = "./scripts/install_docker.sh"
+}
+
+variable "script_install_kubernetes" {
+  default = "./scripts/install_kubernetes.sh"
+}
+
+variable "script_install_package" {
+  default = "./scripts/install_package.sh"
 }
 
 variable "script_install_proxy" {
   default = "./scripts/install_proxy.sh"
 }
 
-variable "script_add_host" {
-  default = "./scripts/add_host.sh"
+variable "script_ssh" {
+  default = "./scripts/ssh.sh"
 }
 
 variable "ssh_folder" {
@@ -68,4 +84,32 @@ variable "ssh_folder" {
 
 variable "k8s_folder" {
   default = "./k8s"
+}
+
+variable "helm_folder" {
+  default = "./helm"
+}
+
+variable "harbor_domain" {
+  default = "harbor-devops.tk"
+}
+
+variable "harbor_username" {
+  default = "harbor"
+}
+
+variable "harbor_password" {
+  default = "harbor"
+}
+
+variable "root" {
+  default = "root"
+}
+
+variable "root_password" {
+  default = "root"
+}
+
+variable "user_password" {
+  default = "root"
 }

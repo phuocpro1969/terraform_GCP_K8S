@@ -29,12 +29,27 @@ resource "google_compute_instance" "lb-instance" {
   }
 
   metadata = {
-    ssh-keys       = "${var.user}:${file(var.ssh_file_public)}"
-    startup-script = <<EOT
-    #!/bin/bash
-    ${file(var.script_install)} 
-    ${file(var.script_install_proxy)} 
-    sudo echo '${var.user}:root' | sudo chpasswd
+    ssh-keys       = "${var.root}:${file(var.ssh_file_public)}"
+    startup-script = <<-EOT
+
+    ${file(var.script_install)}
+
+    sudo tee -a /etc/environment <<-EOF
+    MASTER_COUNT=${var.master-count}
+    WORKER_COUNT=${var.worker-count}
+    EOF
+
+    . /etc/environment
+
+    sudo echo "${var.root}:${var.root_password}" | sudo chpasswd
+
+    ${file(var.script_add_host)}
+
+    ${file(var.script_install_proxy)}
+
+    ${file(var.script_install_docker)}
+
+    ${file(var.script_install_kubernetes)}
     EOT
   }
 
@@ -46,6 +61,7 @@ resource "google_compute_instance" "lb-instance" {
   #   scopes = ["cloud-platform"]
   # }
 }
+
 
 resource "google_compute_instance" "master-instance" {
   count        = var.master-count
@@ -80,11 +96,22 @@ resource "google_compute_instance" "master-instance" {
   }
 
   metadata = {
-    ssh-keys       = "${var.user}:${file(var.ssh_file_public)}"
-    startup-script = <<EOT
-    #!/bin/bash
-    ${file(var.script_install)} 
-    sudo echo '${var.user}:root' | sudo chpasswd
+    ssh-keys       = "${var.root}:${file(var.ssh_file_public)}"
+    startup-script = <<-EOT
+    ${file(var.script_install)}
+    sudo tee -a /etc/environment <<-EOF
+    MASTER_COUNT="${var.master-count}"
+    WORKER_COUNT="${var.worker-count}"
+    EOF
+    . /etc/environment
+
+    sudo echo "${var.root}:${var.root_password}" | sudo chpasswd
+
+    ${file(var.script_add_host)}
+
+    ${file(var.script_install_docker)}
+
+    ${file(var.script_install_kubernetes)}
     EOT
   }
 
@@ -125,11 +152,22 @@ resource "google_compute_instance" "worker-instance" {
   }
 
   metadata = {
-    ssh-keys       = "${var.user}:${file(var.ssh_file_public)}"
-    startup-script = <<EOT
-    #!/bin/bash
-    ${file(var.script_install)} 
-    sudo echo '${var.user}:root' | sudo chpasswd
+    ssh-keys       = "${var.root}:${file(var.ssh_file_public)}"
+    startup-script = <<-EOT
+    ${file(var.script_install)}
+    sudo tee -a /etc/environment <<-EOF
+    MASTER_COUNT="${var.master-count}"
+    WORKER_COUNT="${var.worker-count}"
+    EOF
+    . /etc/environment
+
+    sudo echo "${var.root}:${var.root_password}" | sudo chpasswd
+
+    ${file(var.script_add_host)}
+
+    ${file(var.script_install_docker)}
+
+    ${file(var.script_install_kubernetes)}
     EOT
   }
 

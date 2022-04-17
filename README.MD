@@ -26,6 +26,18 @@ make plan
 make destroy
 ```
 
+## output
+
+```
+make output
+```
+
+## restart
+
+```
+make restart
+```
+
 # How to use K8S
 
 ## dashboard
