@@ -75,14 +75,6 @@ resource "null_resource" "only_master_1_provisilboner" {
     destination = "/root"
   }
 
-  provisioner "local-exec" {
-    command = "sudo echo $HALLO"
-    interpreter = ["sudo", "/bin/bash", "-c"]
-    environment = {
-      HALLO = "hello"
-    }
-  }
-
   provisioner "remote-exec" {
     script = var.script_install_package
   }
@@ -90,6 +82,8 @@ resource "null_resource" "only_master_1_provisilboner" {
   provisioner "remote-exec" {
     inline = [
       "#!/bin/bash",
+      "echo 'EXTERNAL_IPS=${join(",", google_compute_instance.master-instance.*.network_interface.0.access_config.0.nat_ip)}' | tee -a /etc/environment",
+      ". /etc/environment",
 	    "chmod +x /root/**/*.sh",
       ". $HOME/k8s/init.sh",
       ". $HOME/helm/init.sh ${var.harbor_domain} ${var.harbor_username} ${var.harbor_password}",

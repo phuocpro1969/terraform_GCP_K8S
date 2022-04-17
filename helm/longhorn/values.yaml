@@ -45,7 +45,7 @@ image:
 
 service:
   ui:
-    type: LoadBalancer
+    type: NodePort
     nodePort: 8020
     port: 8020
     targetPort: 8020
