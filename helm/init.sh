@@ -11,7 +11,7 @@ helm plugin install https://github.com/chartmuseum/helm-push.git
 . $HOME/helm/longhorn/init.sh $1 $2 $3
 
 # install harbor
-# . $HOME/helm/harbor/init.sh $1 $2 $3
+. $HOME/helm/harbor/init.sh $1 $2 $3
 
 # install argocd
 # curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64

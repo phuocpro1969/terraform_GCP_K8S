@@ -142,9 +142,9 @@ service:
   ## @param service.ports.notary Notary service port
   ##
   ports:
-    http: 80
-    https: 443
-    notary: 4443
+    http: 180
+    https: 1443
+    notary: 14443
   ## Node ports to expose
   ## @param service.nodePorts.http Node port for HTTP
   ## @param service.nodePorts.https Node port for HTTPS
@@ -152,9 +152,9 @@ service:
   ## NOTE: choose port between <30000-32767>
   ##
   nodePorts:
-    http: ""
-    https: ""
-    notary: ""
+    http: 180
+    https: 1443
+    notary: 14443
   ## @param service.sessionAffinity Control where client requests go, to the same pod or round-robin
   ## Values: ClientIP or None
   ## ref: https://kubernetes.io/docs/user-guide/services/
@@ -211,7 +211,7 @@ ingress:
     controller: default
     ## @param ingress.core.hostname Default host for the ingress record
     ##
-    hostname: core.harbor.domain
+    hostname: core.DOMAIN
     ## @param ingress.core.annotations [object] Additional annotations for the Ingress resource. To enable certificate autogeneration, place here your cert-manager annotations.
     ## Use this parameter to set the required annotations for cert-manager, see
     ## ref: https://cert-manager.io/docs/usage/ingress/#supported-annotations
@@ -304,7 +304,7 @@ ingress:
     controller: default
     ## @param ingress.notary.hostname Default host for the ingress record
     ##
-    hostname: notary.harbor.domain
+    hostname: notary.DOMAIN
     ## @param ingress.notary.annotations [object] Additional annotations for the Ingress resource. To enable certificate autogeneration, place here your cert-manager annotations.
     ## Use this parameter to set the required annotations for cert-manager, see
     ## ref: https://cert-manager.io/docs/usage/ingress/#supported-annotations
@@ -877,6 +877,7 @@ nginx:
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
   nodeSelector: {}
+    # role: master
   ## @param nginx.tolerations NGINX Tolerations for pod assignment
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   ##

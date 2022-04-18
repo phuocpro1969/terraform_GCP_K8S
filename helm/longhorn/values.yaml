@@ -44,11 +44,12 @@ image:
   pullPolicy: IfNotPresent
 
 service:
+  enable: true
   ui:
-    type: NodePort
-    nodePort: 8020
-    port: 8020
-    targetPort: 8020
+    type: LoadBalancer
+    nodePort: 280
+    port: 280
+    targetPort: 280
     protocol: TCP
   manager:
     type: ClusterIP
@@ -176,8 +177,8 @@ longhornUI:
   - effect: NoSchedule
     key: node.kubernetes.io/unschedulable
     operator: Exists
-  nodeSelector:
-    role: master
+  nodeSelector: {}
+    #role: master
   ## If you want to set node selector for Longhorn UI Deployment, delete the `{}` in the line above
   ## and uncomment this example block
   #  label-key1: "label-value1"
@@ -204,7 +205,7 @@ ingress:
   ## Can replace the kubernetes.io/ingress.class annotation on v1.18+
   ingressClassName: ~
 
-  host: sslip.io
+  host: longhorn-devops.tk
 
   ## Set this to true in order to enable TLS on the ingress record
   ## A side effect of this will be that the backend service will be connected at port 443

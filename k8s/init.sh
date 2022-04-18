@@ -49,7 +49,7 @@ EOF
 
 . /etc/environment
 kubectl taint nodes --all node-role.kubernetes.io/master-
-kubectl label nodes master1 node-role.kubernetes.io/master=master
+kubectl label nodes master1 node-role.kubernetes.io/master-
 kubectl label nodes master1 role=master
 
 for ((i=2; i<=$MASTER_COUNT; i++))
