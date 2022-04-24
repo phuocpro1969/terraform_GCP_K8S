@@ -1,18 +1,5 @@
 #!/bin/bash
 
-# create dir .kube
-mkdir -p $HOME/.kube
-
-# init permissions for ssh login hosts
-chmod 600 $HOME/.ssh/id_rsa.pri
-
-# Create certs k8s dashboard
-mkdir $HOME/certs_db
-chmod +x $HOME/certs_db
-openssl req -nodes -newkey rsa:2048 -keyout $HOME/certs_db/dashboard.key -out $HOME/certs_db/dashboard.csr -subj "/C=US/ST=US/L=US/O=US/OU=US/CN=kubernetes-dashboard"
-openssl x509 -req -sha256 -days 3650 -in $HOME/certs_db/dashboard.csr -signkey $HOME/certs_db/dashboard.key -out $HOME/certs_db/dashboard.crt
-chmod +x $HOME/certs_db
-
 while ! which kubeadm >/dev/null; do echo "wait install kubeadm"; sleep 10s; done
 while ! which kubectl >/dev/null; do echo "wait install kubectl"; sleep 10s; done
 while ! which kubelet >/dev/null; do echo "wait install kubelet"; sleep 10s; done
@@ -22,7 +9,10 @@ kubeadm config images pull
 if [ ! "$(systemctl is-active kubelet.service)" = "active" ]; then
 
 # init kubeadm to start
-kubeadm init --upload-certs --config $HOME/k8s/init_k8s/init.yaml
+kubeadm init --upload-certs --config $HOME/k8s/init.yaml
+
+# add config
+mkdir -p $HOME/.kube
 cp -i /etc/kubernetes/admin.conf $HOME/.kube/config -n
 chown 1000:1000 $HOME/.kube/config
 export KUBECONFIG=$HOME/.kube/config
@@ -48,9 +38,6 @@ CERT_HASH=$CERT_HASH
 EOF
 
 . /etc/environment
-kubectl taint nodes --all node-role.kubernetes.io/master-
-kubectl label nodes master1 node-role.kubernetes.io/master-
-kubectl label nodes master1 role=master
 
 for ((i=2; i<=$MASTER_COUNT; i++))
 do
@@ -67,8 +54,8 @@ do
          chown 1000:1000 $HOME/.kube/config" \
         | ssh -o StrictHostKeyChecking=no "$USER@master$i" -i $HOME/.ssh/id_rsa.pri
 
-    kubectl taint nodes master$i node-role.kubernetes.io/master-
-    kubectl label node master$i node-role.kubernetes.io/master-
+#    kubectl taint nodes master$i node-role.kubernetes.io/master-
+    kubectl label nodes master$i node-role.kubernetes.io/master-
     kubectl label nodes master$i role=master
 done
 
@@ -79,18 +66,11 @@ do
         --discovery-token-ca-cert-hash sha256:$CERT_HASH" \
         | ssh -o StrictHostKeyChecking=no "$USER@worker$i" -i $HOME/.ssh/id_rsa.pri
 
-    kubectl label node worker$i node-role.kubernetes.io/worker-
+    #kubectl label node worker$i node-role.kubernetes.io/worker-
     kubectl label nodes worker$i role=worker
 done
 
-# install k8s dashboard
-kubectl apply -f $HOME/k8s/init_k8s/dashboard.yaml
-kubectl create secret generic kubernetes-dashboard-certs --from-file=$HOME/certs_db -n kubernetes-dashboard
-
-# Apply user-Admin
-kubectl apply -f $HOME/k8s/init_k8s/admin-user.yaml
-
-# Apply metrics to k8s dashboard
-kubectl apply -f $HOME/k8s/init_k8s/metrics.yaml
-
+kubectl taint nodes master1 node-role.kubernetes.io/master-
+kubectl label nodes master1 node-role.kubernetes.io/master-
+kubectl label nodes master1 role=master
 fi

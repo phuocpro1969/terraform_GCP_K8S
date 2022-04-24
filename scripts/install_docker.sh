@@ -9,12 +9,12 @@ sudo apt update -y && sudo apt install -y docker-ce
 sudo mkdir /etc/docker
 sudo tee -a /etc/docker/daemon.json <<-EOF
 {
-	"exec-opts": ["native.cgroupdriver=systemd"],
-	"log-driver": "json-file",
-	"log-opts": {
-		"max-size": "100m"
-	},
-	"storage-driver": "overlay2"
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "100m"
+  },
+  "storage-driver": "overlay2"
 }
 EOF
 
