@@ -11,5 +11,5 @@ sudo sed -i '/swap/d' /etc/fstab
 sudo echo "ubuntu:root" | sudo chpasswd
 sudo echo "root:root" | sudo chpasswd
 sudo sed -i "s/^PermitRootLogin no/PermitRootLogin yes/" /etc/ssh/sshd_config
-# sudo sed -i "s/^PasswordAuthentication no/PasswordAuthentication yes/" /etc/ssh/sshd_config
+sudo sed -i "s/^PasswordAuthentication no/PasswordAuthentication yes/" /etc/ssh/sshd_config
 sudo service sshd restart
